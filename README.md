@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🦷 ClearCost Dental — AI Pre-Treatment & Insurance Estimator
 
-## Getting Started
+An end-to-end full-stack healthcare SaaS application and automated workflow that parses patient Explanation of Benefits (EOB) and insurance documents using Google Gemini Vision AI, cross-references ADA CDT procedure codes to calculate exact out-of-pocket costs, exports printable PDF treatment plans, and triggers an n8n webhook pipeline to dispatch itemized HTML estimates via email.
 
-First, run the development server:
+🌐 **Live Demo:** [clearcost-dental-estimator.vercel.app](https://clearcost-dental-estimator.vercel.app)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* **Frontend:** Next.js 16 (App Router), TypeScript, Tailwind CSS
+* **Deployment:** Vercel
+* **AI Vision & Extraction:** Google Gemini API (`@google/genai` with structured JSON schema & multi-model fallback)
+* **Automation Workflow:** n8n (Webhook → HTML Estimate Formatter → SMTP / Gmail Dispatch)
+* **PDF & Print Engine:** Client-side `@media print` treatment plan layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ✨ Key Features
 
-To learn more about Next.js, take a look at the following resources:
+* **AI Insurance Document Parsing:** Drag-and-drop any EOB or Summary of Benefits (PDF, PNG, JPG) to automatically extract annual deductibles, deductibles met, annual maximums, and remaining benefits.
+* **Editable Policy Overrides:** Front-desk staff can manually verify and adjust extracted insurance figures in real time before generating a quote.
+* **ADA CDT Fee & Coverage Engine:** Calculates accurate patient responsibility across Preventive (100%), Basic Restorative (80%), and Major Restorative (50%) tiers using remaining deductible and annual maximum rules.
+* **One-Click Printable / PDF Treatment Plans:** Generates a clean, clinic-branded patient treatment breakdown ready for front-desk printing or PDF download.
+* **Automated n8n Patient Dispatch:** Transmits patient contact details, policy rules, and itemized procedure JSON payloads via webhook to n8n for automated email/SMS delivery.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Getting Started Locally
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/HARIS-CREATES/clearcost-dental-estimator.git](https://github.com/HARIS-CREATES/clearcost-dental-estimator.git)
+   cd clearcost-dental-estimator
