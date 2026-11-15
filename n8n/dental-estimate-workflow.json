@@ -1,0 +1,95 @@
+{
+  "name": "ClearCost Dental - Patient Estimate Dispatch",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dental-estimate",
+        "options": {}
+      },
+      "id": "fb3ebe19-16ae-4369-8c30-73c5464a6226",
+      "name": "Receive Estimate Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -144
+      ],
+      "webhookId": "310c6e04-2d0a-4c82-945b-21202682821d"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json.body;\nconst lines = (data.estimate?.lineItems || []).map(item => \n  `<tr>\n    <td style=\"padding:8px;border-bottom:1px solid #e2e8f0;\"><strong>${item.code}</strong> - ${item.description}</td>\n    <td style=\"padding:8px;border-bottom:1px solid #e2e8f0;text-align:right;\">$${item.fee.toFixed(2)}</td>\n    <td style=\"padding:8px;border-bottom:1px solid #e2e8f0;text-align:right;color:#059669;\">$${(item.insurancePays ?? (item.fee - item.patientPays)).toFixed(2)}</td>\n    <td style=\"padding:8px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:bold;\">$${item.patientPays.toFixed(2)}</td>\n  </tr>`\n).join('');\n\nconst html = `\n<div style=\"font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #cbd5e1;border-radius:8px;padding:24px;\">\n  <h2 style=\"color:#1e293b;margin-bottom:4px;\">${data.clinicName}</h2>\n  <p style=\"color:#64748b;font-size:13px;margin-top:0;\">Pre-Treatment Insurance & Out-of-Pocket Estimate</p>\n  <p>Hello <strong>${data.patient?.name || 'Patient'}</strong>,</p>\n  <p>Here is your itemized dental pre-treatment estimate based on your current insurance benefits:</p>\n  <table style=\"width:100%;border-collapse:collapse;font-size:14px;margin:16px 0;\">\n    <thead>\n      <tr style=\"background:#f8fafc;text-align:left;\">\n        <th style=\"padding:8px;border-bottom:2px solid #cbd5e1;\">Procedure</th>\n        <th style=\"padding:8px;border-bottom:2px solid #cbd5e1;text-align:right;\">Fee</th>\n        <th style=\"padding:8px;border-bottom:2px solid #cbd5e1;text-align:right;\">Insurance</th>\n        <th style=\"padding:8px;border-bottom:2px solid #cbd5e1;text-align:right;\">You Pay</th>\n      </tr>\n    </thead>\n    <tbody>${lines}</tbody>\n  </table>\n  <div style=\"background:#eff6ff;padding:14px;border-radius:6px;text-align:right;\">\n    <span style=\"font-size:15px;color:#1e3a8a;\">Estimated Out-of-Pocket Total: <strong>$${data.estimate?.summary?.totalPatientResponsibility?.toFixed(2) || '0.00'}</strong></span>\n  </div>\n  <p style=\"font-size:11px;color:#94a3b8;margin-top:16px;\">*This pre-treatment estimate is based on benefits information provided and is not a guarantee of insurance payment.</p>\n</div>`;\n\nreturn [{ json: { ...data, emailHtml: html } }];"
+      },
+      "id": "c2411006-de95-41e7-acb6-bf5f6adb25dc",
+      "name": "Format Itemized Estimate HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "haris.skillbuild@gmail.com",
+        "toEmail": "={{ $json.patient.email }}",
+        "subject": "=Your Dental Treatment Plan Estimate - {{ $json.clinicName }}",
+        "html": "={{ $json.emailHtml }}",
+        "options": {}
+      },
+      "id": "3ccc29ea-fb6c-4ece-a25e-9949ad19b9c5",
+      "name": "Send Email to Patient",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        -144
+      ],
+      "webhookId": "fcb9a423-a9d3-4697-b25e-06a063a9bad0",
+      "credentials": {
+        "smtp": {
+          "id": "psYf9bXZvJTcVIlV",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Receive Estimate Webhook": {
+      "main": [
+        [
+          {
+            "node": "Format Itemized Estimate HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Itemized Estimate HTML": {
+      "main": [
+        [
+          {
+            "node": "Send Email to Patient",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "bcd136ab-fef7-4a67-b28d-733947947291",
+  "meta": {
+    "instanceId": "994c462441a28897217c0e70fef6a68d8e6d3cb461d6f84ead582ffbcde35fc0"
+  },
+  "nodeGroups": [],
+  "id": "oFWTgMBpQY8wlRkh",
+  "tags": []
+}
